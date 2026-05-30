@@ -348,6 +348,12 @@
     </div>
 
     <div id="rsvp-form">
+      <!-- Honeypot: hidden from humans, bots fill it in -->
+      <div style="position:absolute;left:-9999px;top:-9999px;opacity:0;" aria-hidden="true">
+        <label for="website">Website</label>
+        <input type="text" id="website" name="website" tabindex="-1" autocomplete="off">
+      </div>
+
       <div class="field">
         <label for="name">YOUR NAME</label>
         <input type="text" id="name" placeholder="Full name" required>
@@ -396,9 +402,13 @@
 
 <script>
   // ⬇⬇ REPLACE THIS URL with your Google Apps Script Web App URL ⬇⬇
-  const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwLjqTYGdnAqGdTbB_8UH1F-n_dQ6BPtirj9eVK42nmhGaeRRQiY8wx3BwXey4oFEkS2Q/exec';
+  const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyiHKealkWAR1LS6i7wfZO05Rz-bhNK8E_5jD1N5MZmqJTx5SdcFhesRG4T6J4eFkhcbg/exec';
 
   async function submitRSVP() {
+    // Honeypot check — bots fill this, humans don't
+    const honeypot = document.getElementById('website').value;
+    if (honeypot) return;
+
     const name = document.getElementById('name').value.trim();
     const attending = document.getElementById('attending').value;
     const guests = document.getElementById('guests').value;
@@ -420,6 +430,7 @@
       guests: attending === 'Yes' ? guests : 0,
       dietary,
       message,
+      website: honeypot,
       timestamp: new Date().toLocaleString('en-GB')
     };
 
